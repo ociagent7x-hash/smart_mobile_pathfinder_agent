@@ -1,0 +1,23 @@
+# Virtual Environments
+.venv/
+env/
+venv/
+ENV/
+
+# Python Cache & Compiled Files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# IDEs & Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# macOS System Files
+.DS_Store
+.AppleDouble
+.LSOverride
