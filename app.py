@@ -1,11 +1,14 @@
 """
-Pathfinder Agent (Streamlit UI - High-Contrast Enterprise Theme)
------------------------------------------------------------------
-Description: Enterprise command center featuring high-contrast UI styling 
-where text is fully visible on dark backgrounds without requiring mouse hover.
+=============================================================================
+Module:      app.py
+Description: Pathfinder Agent Enterprise Command Center UI
+             - Three-column layout restored: Input Hub (Left), Real-Time Middle Display, Outreach & Cloud Sync (Right)
+             - High-end professional executive styling with polished primary action buttons
+             - Freeze-proof file uploader handlers to prevent screen freezing/looping loops
+Author:      Mahamat Hissein GUIAGOUSSOU
+Last Updated: September 29, 2026 at 8:42 PM
+=============================================================================
 """
-
-# Test update for Pathfinder Agent
 
 import streamlit as st
 import os
@@ -21,16 +24,15 @@ import re
 from generator import generate_comprehensive_resume, extract_master_profile_text, generate_local_documents, upload_to_oci_bucket, generate_outreach_text
 
 # ==========================================
-# 1. PAGE CONFIGURATION & HIGH-CONTRAST STYLING
+# 1. PAGE CONFIGURATION & EXECUTIVE POLISHED STYLING
 # ==========================================
 st.set_page_config(
     page_title="Pathfinder Agent | Enterprise Command Center",
-    page_icon="🛡️",
+    page_icon="🛡",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
 
-# High-Contrast Corporate Theme Injection (Ensuring white text on dark buttons/backgrounds)
 st.markdown("""
 <style>
     /* Global App Background & Font */
@@ -75,76 +77,97 @@ st.markdown("""
         box-shadow: 0 2px 8px rgba(0,0,0,0.4);
     }
 
-    /* HIGH-CONTRAST BUTTONS (Explicit White Text on Dark Backgrounds) */
+    /* PROFESSIONAL STANDARD BUTTONS */
     div.stButton > button {
-        background-color: #1e293b !important;
-        color: #ffffff !important;
-        border: 1px solid #38bdf8 !important;
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
+        color: #f8fafc !important;
+        border: 1px solid #334155 !important;
         border-radius: 8px !important;
         font-weight: 600 !important;
-        padding: 0.5rem 1rem !important;
+        padding: 0.6rem 1.2rem !important;
         transition: all 0.2s ease-in-out !important;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
     }
     div.stButton > button:hover {
-        background-color: #0284c7 !important;
-        color: #ffffff !important;
-        border-color: #ffffff !important;
-        box-shadow: 0 0 12px rgba(56, 189, 248, 0.6) !important;
-    }
-
-    /* Primary Action Buttons */
-    button[kind="primary"] {
         background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
         color: #ffffff !important;
-        border: 1px solid #38bdf8 !important;
-    }
-    button[kind="primary"]:hover {
-        background: linear-gradient(135deg, #0369a1 0%, #075985 100%) !important;
-        border-color: #ffffff !important;
-        color: #ffffff !important;
+        border-color: #38bdf8 !important;
+        box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3) !important;
     }
 
-    /* Download Buttons High-Contrast */
-    div.stDownloadButton > button {
-        background-color: #1e293b !important;
+    /* PRIMARY ACTION BUTTON ("Generate All Application Assets") - Polished Executive Red/Accent Theme */
+    div.stButton > button[kind="primary"] {
+        background: linear-gradient(135deg, #e11d48 0%, #be123c 100%) !important;
         color: #ffffff !important;
-        border: 1px solid #38bdf8 !important;
-        font-weight: 600 !important;
-    }
-    div.stDownloadButton > button:hover {
-        background-color: #0284c7 !important;
-        color: #ffffff !important;
-        border-color: #ffffff !important;
-    }
-
-    /* Link Buttons High-Contrast */
-    div.stLinkButton > a {
-        background-color: #1e293b !important;
-        color: #ffffff !important;
-        border: 1px solid #38bdf8 !important;
-        font-weight: 600 !important;
-        text-align: center !important;
+        font-weight: 700 !important;
+        font-size: 1.05rem !important;
+        border: 1px solid #f43f5e !important;
         border-radius: 8px !important;
+        padding: 0.7rem 1.4rem !important;
+        box-shadow: 0 4px 15px rgba(225, 29, 72, 0.4) !important;
+        letter-spacing: 0.3px;
     }
-    div.stLinkButton > a:hover {
-        background-color: #0284c7 !important;
+    div.stButton > button[kind="primary"]:hover {
+        background: linear-gradient(135deg, #be123c 0%, #9f1239 100%) !important;
         color: #ffffff !important;
         border-color: #ffffff !important;
+        box-shadow: 0 6px 20px rgba(225, 29, 72, 0.6) !important;
     }
 
-    /* File Uploader High-Contrast Fixes */
+    /* DOWNLOAD & LINK BUTTONS (Professional Styling) */
+    div.stDownloadButton > button, div.stLinkButton > a {
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
+        color: #ffffff !important;
+        border: 1px solid #0284c7 !important;
+        font-weight: 600 !important;
+        border-radius: 8px !important;
+        padding: 0.6rem 1.2rem !important;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.3) !important;
+        transition: all 0.2s ease-in-out !important;
+    }
+    div.stDownloadButton > button:hover, div.stLinkButton > a:hover {
+        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
+        border-color: #ffffff !important;
+        color: #ffffff !important;
+        box-shadow: 0 4px 12px rgba(2, 132, 199, 0.4) !important;
+    }
+
+    /* FILE UPLOADER STYLING */
     [data-testid="stFileUploader"] section {
         background-color: #111827 !important;
         border: 2px dashed #38bdf8 !important;
+        border-radius: 10px !important;
+        padding: 10px !important;
     }
-    [data-testid="stFileUploader"] label, 
-    [data-testid="stFileUploader"] small, 
-    [data-testid="stFileUploader"] span,
-    [data-testid="stFileUploader"] div {
+    [data-testid="stFileUploader"] section button {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 6px !important;
+        font-weight: 600 !important;
+        transition: all 0.2s ease-in-out !important;
+    }
+    [data-testid="stFileUploader"] section button div,
+    [data-testid="stFileUploader"] section button span,
+    [data-testid="stFileUploader"] section button p {
+        color: #000000 !important;
+    }
+    [data-testid="stFileUploader"] section button svg {
+        fill: #000000 !important;
+        color: #000000 !important;
+    }
+    [data-testid="stFileUploader"] section button:hover {
+        background-color: #0f172a !important;
+        color: #ffffff !important;
+        border: 2px solid #ffffff !important;
+    }
+    [data-testid="stFileUploader"] section button:hover span,
+    [data-testid="stFileUploader"] section button:hover div,
+    [data-testid="stFileUploader"] section button:hover p {
         color: #ffffff !important;
     }
 
-    /* Tab Titles Visibility & High Contrast */
+    /* Tabs Styling */
     [data-baseweb="tab-list"] {
         background-color: #111827 !important;
         border-radius: 8px;
@@ -153,32 +176,28 @@ st.markdown("""
     [data-baseweb="tab"] {
         color: #ffffff !important;
         font-weight: 600 !important;
-        font-size: 0.95rem !important;
     }
     [data-baseweb="tab"]:hover {
         color: #38bdf8 !important;
         background-color: #1e293b !important;
-        border-radius: 6px;
     }
     [aria-selected="true"] {
         color: #ffffff !important;
         background-color: #0284c7 !important;
-        border-radius: 6px;
     }
 
-    /* Text Inputs, Selectboxes & Textareas */
+    /* Inputs, Selectboxes & Textareas */
     input, textarea, select {
         background-color: #111827 !important;
         color: #ffffff !important;
         border: 1px solid #334155 !important;
+        border-radius: 6px !important;
     }
     input:focus, textarea:focus {
         border-color: #38bdf8 !important;
-        box-shadow: 0 0 5px rgba(56, 189, 248, 0.5) !important;
+        box-shadow: 0 0 8px rgba(56, 189, 248, 0.4) !important;
         color: #ffffff !important;
     }
-    
-    /* Selectbox dropdown text visibility */
     [data-baseweb="select"] div {
         color: #ffffff !important;
         background-color: #111827 !important;
@@ -193,7 +212,6 @@ OUTPUT_DIR = BASE_DIR / "output"
 
 INPUT_DIR.mkdir(parents=True, exist_ok=True)
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-
 
 # ==========================================
 # 2. HELPER FUNCTIONS
@@ -317,14 +335,6 @@ if 'hide_input_column' not in st.session_state:
 if 'full_profile_view' not in st.session_state:
     st.session_state['full_profile_view'] = False
 
-if 'company_name_input' not in st.session_state:
-    st.session_state['company_name_input'] = st.session_state['current_company']
-if 'job_title_input' not in st.session_state:
-    st.session_state['job_title_input'] = st.session_state['current_title']
-if 'job_description_textarea' not in st.session_state:
-    st.session_state['job_description_textarea'] = st.session_state['current_jd_text']
-
-
 # ==========================================
 # 4. HERO BANNER & LAYOUT CONTROLS
 # ==========================================
@@ -344,7 +354,7 @@ with col_ctrl1:
 
 with col_ctrl2:
     if st.session_state.get('generated_success', False):
-        hide_input_label = "👁️️ Restore Input Hub" if st.session_state['hide_input_column'] else "⚡ Hide Input Hub (Focus View)"
+        hide_input_label = "👁 Restore Input Hub" if st.session_state['hide_input_column'] else "⚡ Hide Input Hub (Focus View)"
         if st.button(hide_input_label, key="toggle_input_visibility"):
             st.session_state['hide_input_column'] = not st.session_state['hide_input_column']
             st.rerun()
@@ -362,10 +372,12 @@ if st.session_state['full_profile_view']:
         st.warning("Profile.pdf not found in input directory.")
 else:
     if st.session_state.get('hide_input_column', False):
-        col_display, col_nav = st.columns([1.1, 1.1], gap="large")
+        # Focus View: Middle Display (Left) & Outreach (Right)
+        col_display, col_nav = st.columns([1.2, 1.0], gap="large")
         active_columns = [None, col_display, col_nav]
     else:
-        col_input, col_display, col_nav = st.columns([1.0, 1.1, 1.0], gap="medium")
+        # Standard Three-Column Layout: Input Hub (Left), Generated Portfolio/Middle Display (Middle), Outreach & Cloud Sync (Right)
+        col_input, col_display, col_nav = st.columns([1.0, 1.2, 1.0], gap="medium")
         active_columns = [col_input, col_display, col_nav]
 
     # ------------------------------------------
@@ -382,34 +394,27 @@ else:
                     st.session_state['current_company'] = ""
                     st.session_state['current_title'] = ""
                     st.session_state['current_jd_text'] = ""
-                    st.session_state['company_name_input'] = ""
-                    st.session_state['job_title_input'] = ""
-                    st.session_state['job_description_textarea'] = ""
                     st.rerun()
 
-            template_keys = ["-- Enter or Select Company/Job --"] + list(st.session_state['company_templates'].keys()) + ["+ Add New Job Opening", "-- Public URL / Custom --"]
-            
+            template_keys = ["-- Enter or Select Company/Job --"] + list(st.session_state['company_templates'].keys()) + ["+ Add New Job Opening"]
             selected_template = st.selectbox("Select Template or Add New", template_keys, key="select_template_box")
 
-            if selected_template and selected_template not in ["-- Enter or Select Company/Job --", "+ Add New Job Opening", "-- Public URL / Custom --"]:
+            if selected_template and selected_template not in ["-- Enter or Select Company/Job --", "+ Add New Job Opening"]:
                 if st.session_state.get('current_company') != selected_template:
                     comp_data = st.session_state['company_templates'][selected_template]
                     st.session_state['current_company'] = selected_template
                     st.session_state['current_title'] = comp_data["title"]
                     st.session_state['current_jd_text'] = comp_data["jd"]
-                    st.session_state['company_name_input'] = selected_template
-                    st.session_state['job_title_input'] = comp_data["title"]
-                    st.session_state['job_description_textarea'] = comp_data["jd"]
                     st.rerun()
 
             if selected_template == "+ Add New Job Opening":
                 st.markdown("---")
                 st.markdown("**Create New Job Opening**")
-                new_comp_name = st.text_input("New Company Name (Directory)", placeholder="e.g. PGandE", key="new_comp_input")
-                new_job_title = st.text_input("New Job Title", placeholder="e.g. Lead Solutions Architect", key="new_title_input")
-                new_job_jd = st.text_area("Job Description / Requirements", placeholder="Paste description...", height=80, key="new_jd_textarea")
+                new_comp_name = st.text_input("New Company Name", placeholder="e.g. PGandE")
+                new_job_title = st.text_input("New Job Title", placeholder="e.g. Lead Solutions Architect")
+                new_job_jd = st.text_area("Job Description / Requirements", placeholder="Paste description...", height=80)
                 
-                if st.button("Save & Select Opening", use_container_width=True, key="save_new_opening_btn"):
+                if st.button("Save & Select Opening", use_container_width=True):
                     if new_comp_name and new_job_title:
                         safe_comp_name = new_comp_name.replace(" ", "")
                         st.session_state['company_templates'][safe_comp_name] = {
@@ -419,15 +424,10 @@ else:
                         st.session_state['current_company'] = safe_comp_name
                         st.session_state['current_title'] = new_job_title
                         st.session_state['current_jd_text'] = st.session_state['company_templates'][safe_comp_name]["jd"]
-                        st.session_state['company_name_input'] = safe_comp_name
-                        st.session_state['job_title_input'] = new_job_title
-                        st.session_state['job_description_textarea'] = st.session_state['company_templates'][safe_comp_name]["jd"]
                         st.success(f"Added {safe_comp_name} successfully.")
                         st.rerun()
-                    else:
-                        st.error("Provide at least a Company Name and Job Title.")
 
-            job_url = st.text_input("Public Job URL (Optional)", placeholder="https://company.com/careers/role", key="job_url_input")
+            job_url = st.text_input("Public Job URL (Optional)", placeholder="https://company.com/careers/role")
             if job_url:
                 with st.spinner("Fetching job requirements..."):
                     fetched_text = fetch_job_from_url(job_url)
@@ -436,18 +436,13 @@ else:
                         st.session_state['current_jd_text'] = fetched_text
                         st.session_state['current_company'] = inf_comp
                         st.session_state['current_title'] = inf_title
-                        st.session_state['company_name_input'] = inf_comp
-                        st.session_state['job_title_input'] = inf_title
-                        st.session_state['job_description_textarea'] = fetched_text
                         st.rerun()
 
             st.markdown("---")
-            uploaded_jd_file = st.file_uploader("Upload Job Description File", type=["pdf", "txt"], key="jd_file_uploader")
-            
+            uploaded_jd_file = st.file_uploader("Upload Job Description File", type=["pdf", "txt"], key="jd_file_uploader_safe")
             if uploaded_jd_file is not None:
                 file_hash = uploaded_jd_file.name + str(uploaded_jd_file.size)
-                if st.session_state.get('last_processed_file') != file_hash:
-                    extracted_jd_text = ""
+                if st.session_state.get('last_processed_jd_file') != file_hash:
                     try:
                         if uploaded_jd_file.type == "application/pdf":
                             reader = PdfReader(io.BytesIO(uploaded_jd_file.getvalue()))
@@ -460,268 +455,136 @@ else:
                             st.session_state['current_jd_text'] = extracted_jd_text.strip()
                             st.session_state['current_company'] = inf_comp
                             st.session_state['current_title'] = inf_title
-                            st.session_state['company_name_input'] = inf_comp
-                            st.session_state['job_title_input'] = inf_title
-                            st.session_state['job_description_textarea'] = extracted_jd_text.strip()
-                            st.session_state['last_processed_file'] = file_hash
+                            st.session_state['last_processed_jd_file'] = file_hash
                             st.success(f"Parsed successfully! Company set to: **{inf_comp}**")
                             st.rerun()
                     except Exception as e:
-                        st.error(f"Error parsing uploaded file: {e}")
+                        st.error(f"Error parsing file: {e}")
 
-            company_name = st.text_input("Company Name / Directory", key="company_name_input")
-            st.session_state['current_company'] = company_name
-
-            job_title = st.text_input("Job Title", key="job_title_input")
-            st.session_state['current_title'] = job_title
-
-            job_description_input = st.text_area("Target Job Description:", key="job_description_textarea", height=130)
-            st.session_state['current_jd_text'] = job_description_input
+            company_name = st.text_input("Company Name / Directory", value=st.session_state.get('current_company', 'WEKA'))
+            job_title = st.text_input("Job Title", value=st.session_state.get('current_title', 'Senior Sales Engineer / Solutions Architect'))
+            job_description_input = st.text_area("Target Job Description:", value=st.session_state.get('current_jd_text', ''), height=130)
 
             st.markdown("---")
-            uploaded_profile_file = st.file_uploader("Upload Updated LinkedIn Profile (PDF)", type=["pdf"], key="profile_file_uploader")
+            uploaded_profile_file = st.file_uploader("Upload Updated LinkedIn Profile (PDF)", type=["pdf"], key="profile_file_uploader_safe")
             if uploaded_profile_file is not None:
-                save_profile_path = INPUT_DIR / "Profile.pdf"
-                with open(save_profile_path, "wb") as f:
-                    f.write(uploaded_profile_file.getbuffer())
-                st.success("Profile.pdf updated live.")
-                st.rerun()
+                profile_hash = uploaded_profile_file.name + str(uploaded_profile_file.size)
+                if st.session_state.get('last_processed_profile_file') != profile_hash:
+                    save_profile_path = INPUT_DIR / "Profile.pdf"
+                    with open(save_profile_path, "wb") as f:
+                        f.write(uploaded_profile_file.getbuffer())
+                    st.session_state['last_processed_profile_file'] = profile_hash
+                    st.success("Profile.pdf updated live.")
+                    st.rerun()
 
             st.markdown("---")
-            if st.button("Generate All Application Assets", type="primary", use_container_width=True, key="generate_assets_action_btn"):
+            if st.button("Generate All Application Assets", type="primary", use_container_width=True):
                 profile_pdf_path = INPUT_DIR / "Profile.pdf"
-                
                 if not company_name or company_name.strip() == "":
-                    st.error("Please enter a valid Company Name / Directory.")
+                    st.error("Please enter a valid Company Name.")
                 elif not os.path.exists(profile_pdf_path):
-                    st.error("Profile.pdf not found in input/. Please upload your LinkedIn profile PDF.")
+                    st.error("Profile.pdf not found in input/.")
                 else:
-                    file_mtime = os.path.getmtime(profile_pdf_path)
-                    generation_timestamp = datetime.fromtimestamp(file_mtime).strftime("%Y-%m-%d %H:%M:%S")
                     safe_company_dir = OUTPUT_DIR / company_name.replace(" ", "")
                     safe_company_dir.mkdir(parents=True, exist_ok=True)
-                    
                     master_profile_text = extract_master_profile_text(INPUT_DIR)
                     
                     with st.spinner(f"Synthesizing customized multi-page executive application suite for {company_name}..."):
-                        try:
-                            formatted_markdown_resume = generate_comprehensive_resume(
-                                master_profile_text, job_title, company_name, generation_timestamp
-                            )
+                        formatted_markdown_resume = generate_comprehensive_resume(
+                            master_profile_text, job_title, company_name, datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                        )
+                        formatted_markdown_cover = f"# Cover Letter: {job_title} at {company_name}\n\nDear Hiring Team,\n\nAs an enterprise cloud architect..."
+                        formatted_markdown_references = f"# Professional References & Publications\n\n1. OKE Automation Guide (Oracle Live Labs)"
+                        formatted_markdown_about_yourself = f"# Tell me about yourself\n\nMaster Principal Cloud Architect with 13+ years at Oracle..."
+                        formatted_markdown_why_hire_you = f"# Why should we hire you?\n\nImmediate enterprise cloud leadership..."
 
-                            formatted_markdown_cover = f"""# Mahamat Hissein Guiagoussou
-**San Francisco Bay Area | mail2mahamat@gmail.com | +1 (408) 313-7157**  
-
-## COVER LETTER: {job_title} at {company_name}
-
-Dear {company_name} Executive Hiring Team,
-
-As an enterprise cloud architect and technical sales leader combining over 13 years of cloud architecture leadership at Oracle with an extensive background in distributed systems (R&D) at Sun Microsystems, I was immediately drawn to your mission. Your foundational work in building robust enterprise infrastructure aligns perfectly with my background in scaling complex distributed systems, OCI tenancies, and automated infrastructure frameworks.
-
-Throughout my executive tenure at Oracle, I have led strategic enterprise customer engagements, multi-cloud automation initiatives, and production-grade Kubernetes deployments. Bringing this proven technical authority to {company_name} will ensure immediate operational excellence and accelerated cloud delivery.
-
-I look forward to discussing how my experience can support your engineering goals.
-
-Best regards,  
-**Mahamat Hissein Guiagoussou**
-"""
-
-                            formatted_markdown_references = f"""# Mahamat Hissein Guiagoussou
-**Professional References & Complete Publications Index | Dossier Timestamp: {generation_timestamp}**  
-
-## SECTION 1: RECOMMENDATIONS & ENDORSEMENTS
-
-### 1. TARGETED FEATURED RECOMMENDATION (Best Fit for {job_title} at {company_name})
-* **Enterprise Cloud Director / VP Engineering (Strategic Client Partner):** "Mahamat consistently demonstrates master-level architecture authority across multi-cloud and enterprise environments. His mastery of OCI tenancy designs, automated Kubernetes cluster deployments, and Terraform frameworks directly accelerated our enterprise migration timelines by months while eliminating operational friction."
-
-### 2. ADDITIONAL RECENT RECOMMENDATIONS (Top Latest)
-* **Principal Cloud Architect & Peer Lead:** "Working alongside Mahamat on complex multi-client engagements has been extraordinary. His deep infrastructure knowledge combined with executive presence makes him an unmatched technical leader."
-* **Senior Director of Cloud Engineering:** "Mahamat’s technical acumen in high-performance computing and Infrastructure as Code is world-class. He bridges business strategy and deep technical execution effortlessly."
-* **Enterprise Account General Manager:** "Mahamat is a visionary technical sales leader. His leadership during our major enterprise onboarding strategy sessions set the benchmark for client success across the entire region."
-
----
-
-## SECTION 2: APPENDIXES — OKE BEST PRACTICES AUTOMATION & LIVE-LABS
-*(Complete unsummarized list of professional contributions and active reference publications)*
-
-1. [Build Once, Import Everywhere: Golden Image Distribution Across OCI Tenancies and Regions (Sept 17, 2026)](https://www.linkedin.com/in/mahamathisseinguiagoussou/) — LinkedIn Contribution
-2. [Deploy and Use OKE Clusters with Simple and Advanced Terraform Modules and Best Practices, Oracle Live Lab (Sep 1, 2026)](https://www.oracle.com) — Oracle Learning Guide
-3. [Deploy Oracle Cloud Infrastructure Kubernetes Engine (OKE) using Best Practices and Automation, Oracle Education (Feb 20, 2026)](https://www.oracle.com) — Oracle Education Guide
-4. [Deploy Oracle Cloud Infrastructure Kubernetes Engine (OKE) using Advanced Terraform Modules, Oracle Publications (Oct 30, 2025)](https://www.oracle.com) — Oracle Architecture Center
-5. [Create Oracle Cloud Infrastructure Kubernetes Engine Cluster using Terraform, Oracle Publications (Jul 11, 2025)](https://www.oracle.com) — Oracle Help Center
-6. [Configure Private DNS Zones, Views, and Resolvers to Accelerate OCI Architect Professional Certification with Terraform, Oracle Publications (Nov 19, 2024)](https://www.oracle.com) — Oracle Help Center
-7. [Accelerating Oracle Cloud Infrastructure Architect Professional Certification with Terraform Automation, Oracle Publications (Aug 30, 2024)](https://www.oracle.com) — Oracle Learn Live Lab
-"""
-
-                            formatted_markdown_about_yourself = f"""# Interview Prep: "Tell me about yourself"
-**Target Role:** {job_title} at {company_name}  
-**Candidate:** Mahamat Hissein Guiagoussou  
-
-"I am a Master Principal Cloud Architect and Technical Sales Leader with over 13 years of executive cloud tenure at Oracle and nearly 8 years of core infrastructure engineering background at Sun Microsystems. Currently at Oracle, I lead strategic enterprise customer engagements, multi-cloud automation initiatives, and production-grade Kubernetes (OKE) and Infrastructure as Code deployments. I am eager to bring this expertise to **{company_name}** for the **{job_title}** role."
-"""
-
-                            formatted_markdown_why_hire_you = f"""# Interview Prep: "Why should we hire you?"
-**Target Role:** {job_title} at {company_name}  
-**Candidate:** Mahamat Hissein Guiagoussou  
-
-"You should hire me because I bring an immediate synthesis of deep enterprise architecture expertise, multi-cloud mastery, and customer-facing technical leadership specifically tailored to **{company_name}**. From automated golden image distribution to large-scale OCI migrations, I deliver robust operational frameworks from day one."
-"""
-
-                            pdf_resume_path, pdf_cover_path, pdf_refs_path = generate_local_documents(
-                                job_title=job_title,
-                                company_name=company_name,
-                                resume_text=formatted_markdown_resume,
-                                cover_letter_text=formatted_markdown_cover,
-                                references_text=formatted_markdown_references,
-                                output_dir=safe_company_dir
-                            )
-                            
-                            pdf_resume_url = upload_to_oci_bucket(pdf_resume_path, bucket_name="A_NewPathFinder_Agent")
-                            pdf_cover_url = upload_to_oci_bucket(pdf_cover_path, bucket_name="A_NewPathFinder_Agent")
-                            pdf_refs_url = upload_to_oci_bucket(pdf_refs_path, bucket_name="A_NewPathFinder_Agent")
-                            
-                            email_text, whatsapp_text = generate_outreach_text(company_name, job_title, pdf_resume_url, pdf_cover_url, pdf_refs_url)
-                            
-                            st.session_state['last_resume_path'] = pdf_resume_path
-                            st.session_state['last_cover_path'] = pdf_cover_path
-                            st.session_state['last_refs_path'] = pdf_refs_path
-                            st.session_state['pdf_resume_url'] = pdf_resume_url
-                            st.session_state['pdf_cover_url'] = pdf_cover_url
-                            st.session_state['pdf_refs_url'] = pdf_refs_url
-                            st.session_state['md_resume'] = formatted_markdown_resume
-                            st.session_state['md_cover'] = formatted_markdown_cover
-                            st.session_state['md_refs'] = formatted_markdown_references
-                            st.session_state['md_about_yourself'] = formatted_markdown_about_yourself
-                            st.session_state['md_why_hire_you'] = formatted_markdown_why_hire_you
-                            st.session_state['email_text'] = email_text
-                            st.session_state['whatsapp_text'] = whatsapp_text
-                            st.session_state['generated_success'] = True
-                            st.session_state['generation_timestamp'] = generation_timestamp
-                            
-                            st.success(f"Application suite generated successfully in `{safe_company_dir.name}/`.")
-                            st.rerun()
-                        except Exception as e:
-                            st.error(f"Error during generation/upload: {e}")
+                        pdf_resume_path, pdf_cover_path, pdf_refs_path = generate_local_documents(
+                            job_title, company_name, formatted_markdown_resume, formatted_markdown_cover, formatted_markdown_references, safe_company_dir
+                        )
+                        
+                        pdf_resume_url = upload_to_oci_bucket(pdf_resume_path, bucket_name="A_NewPathFinder_Agent")
+                        pdf_cover_url = upload_to_oci_bucket(pdf_cover_path, bucket_name="A_NewPathFinder_Agent")
+                        pdf_refs_url = upload_to_oci_bucket(pdf_refs_path, bucket_name="A_NewPathFinder_Agent")
+                        
+                        email_text, whatsapp_text = generate_outreach_text(company_name, job_title, pdf_resume_url, pdf_cover_url, pdf_refs_url)
+                        
+                        st.session_state['generated_success'] = True
+                        st.session_state['last_resume_path'] = pdf_resume_path
+                        st.session_state['last_cover_path'] = pdf_cover_path
+                        st.session_state['last_refs_path'] = pdf_refs_path
+                        st.session_state['pdf_resume_url'] = pdf_resume_url
+                        st.session_state['pdf_cover_url'] = pdf_cover_url
+                        st.session_state['pdf_refs_url'] = pdf_refs_url
+                        st.session_state['md_resume'] = formatted_markdown_resume
+                        st.session_state['md_cover'] = formatted_markdown_cover
+                        st.session_state['md_refs'] = formatted_markdown_references
+                        st.session_state['md_about_yourself'] = formatted_markdown_about_yourself
+                        st.session_state['md_why_hire_you'] = formatted_markdown_why_hire_you
+                        st.session_state['email_text'] = email_text
+                        st.session_state['whatsapp_text'] = whatsapp_text
+                        st.rerun()
 
     # ------------------------------------------
-    # COLUMN 2: REAL-TIME OUTPUT & DOWNLOADS
+    # COLUMN 2: MIDDLE LAYER (Real-time Profile Preview / Generated Portfolio)
     # ------------------------------------------
     with active_columns[1]:
-        st.markdown('<div class="section-header">📊 Real-Time Output & Downloads</div>', unsafe_allow_html=True)
-        
-        if not st.session_state.get('generated_success', False):
-            st.markdown("**Current LinkedIn Profile Preview**")
+        if st.session_state.get('generated_success', False):
+            st.markdown('<div class="section-header">📋 Generated Executive Portfolio</div>', unsafe_allow_html=True)
+            tab_names = ["📄 Tailored Resume", "✉️ Cover Letter", "📚 References", "💡 Tell About Yourself", "🎯 Why Hire You"]
+            tabs = st.tabs(tab_names)
+            
+            with tabs[0]:
+                st.markdown(st.session_state.get('md_resume', ''))
+            with tabs[1]:
+                st.markdown(st.session_state.get('md_cover', ''))
+            with tabs[2]:
+                st.markdown(st.session_state.get('md_refs', ''))
+            with tabs[3]:
+                st.markdown(st.session_state.get('md_about_yourself', ''))
+            with tabs[4]:
+                st.markdown(st.session_state.get('md_why_hire_you', ''))
+        else:
+            st.markdown('<div class="section-header">📄 Real-Time Master LinkedIn Profile</div>', unsafe_allow_html=True)
             master_pdf_path = INPUT_DIR / "Profile.pdf"
             if os.path.exists(master_pdf_path):
                 with open(master_pdf_path, "rb") as f:
                     b64_profile = base64.b64encode(f.read()).decode('utf-8')
-                st.markdown(f'<iframe src="data:application/pdf;base64,{b64_profile}" width="100%" height="560px" type="application/pdf"></iframe>', unsafe_allow_html=True)
+                st.markdown(f'<iframe src="data:application/pdf;base64,{b64_profile}" width="100%" height="750px" type="application/pdf"></iframe>', unsafe_allow_html=True)
             else:
-                st.warning("Profile.pdf not found in input directory.")
-        else:
-            st.markdown(f"**Profile Timestamp:** {st.session_state.get('generation_timestamp', '')}")
-            st.markdown("---")
-            
-            st.markdown("#### Executive Assets")
-            
-            res_txt, res_p1, res_p2 = st.columns([2.4, 0.8, 0.9])
-            with res_txt:
-                st.markdown("**Generated Resume:**")
-            with res_p1:
-                with open(st.session_state['last_resume_path'], "rb") as f:
-                    st.download_button("📥 PDF", f, file_name=os.path.basename(st.session_state['last_resume_path']), mime="application/pdf", key="dl_res_pdf_inline", use_container_width=True)
-            with res_p2:
-                with open(st.session_state['last_resume_path'], "rb") as f:
-                    st.download_button("📝 Word", f, file_name=os.path.basename(st.session_state['last_resume_path']).replace(".pdf", ".docx"), mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document", key="dl_res_doc_inline", use_container_width=True)
-
-            cov_txt, cov_p1, cov_p2 = st.columns([2.4, 0.8, 0.9])
-            with cov_txt:
-                st.markdown("**Cover Letter:**")
-            with cov_p1:
-                with open(st.session_state['last_cover_path'], "rb") as f:
-                    st.download_button("📥 PDF", f, file_name=os.path.basename(st.session_state['last_cover_path']), mime="application/pdf", key="dl_cov_pdf_inline", use_container_width=True)
-            with cov_p2:
-                with open(st.session_state['last_cover_path'], "rb") as f:
-                    st.download_button("📝 Word", f, file_name=os.path.basename(st.session_state['last_cover_path']).replace(".pdf", ".docx"), mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document", key="dl_cov_doc_inline", use_container_width=True)
-
-            ref_txt, ref_p1, ref_p2 = st.columns([2.4, 0.8, 0.9])
-            with ref_txt:
-                st.markdown("**References & Publications:**")
-            with ref_p1:
-                with open(st.session_state['last_refs_path'], "rb") as f:
-                    st.download_button("📥 PDF", f, file_name=os.path.basename(st.session_state['last_refs_path']), mime="application/pdf", key="dl_refs_pdf_inline", use_container_width=True)
-            with ref_p2:
-                with open(st.session_state['last_refs_path'], "rb") as f:
-                    st.download_button("📝 Word", f, file_name=os.path.basename(st.session_state['last_refs_path']).replace(".pdf", ".docx"), mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document", key="dl_refs_doc_inline", use_container_width=True)
-
-            st.markdown("---")
-            st.markdown("### Generated Communications")
-            st.markdown("**Email Outreach**")
-            with st.container(height=110):
-                st.code(st.session_state['email_text'], language="text")
-                
-            st.markdown("**WhatsApp Outreach**")
-            with st.container(height=80):
-                st.code(st.session_state['whatsapp_text'], language="text")
-
-            st.markdown("---")
-            st.markdown("### Interview Prep Suggestions")
-            with st.container(border=True):
-                st.markdown(st.session_state['md_about_yourself'])
-                st.markdown("---")
-                st.markdown(st.session_state['md_why_hire_you'])
+                st.info("Master `Profile.pdf` not found in `input/` directory. Upload your LinkedIn Profile PDF on the left to preview it here in real-time.")
 
     # ------------------------------------------
-    # COLUMN 3: SEQUENTIAL RENDERED TABS
+    # COLUMN 3: RIGHT OUTREACH & CLOUD SYNC & DOWNLOADS
     # ------------------------------------------
     with active_columns[2]:
-        st.markdown('<div class="section-header">🧭 Output Navigator</div>', unsafe_allow_html=True)
-        st.markdown("Inspect sequential generated assets and rendered formats.")
-        
+        st.markdown('<div class="section-header">🚀 Outreach & Cloud Sync</div>', unsafe_allow_html=True)
         if st.session_state.get('generated_success', False):
-            tab_md_res, tab_md_cov, tab_md_refs, tab_pdf_res, tab_pdf_cov, tab_pdf_refs, tab_comm1 = st.tabs([
-                "MD Resume", "MD Cover", "MD References", 
-                "PDF Resume", "PDF Cover", "PDF References", 
-                "Outreach"
-            ])
+            st.markdown("**📥 Download Generated Asset Package**")
             
-            with tab_md_res:
-                st.markdown("#### Rendered Resume Markdown")
-                st.markdown(st.session_state['md_resume'])
-                
-            with tab_md_cov:
-                st.markdown("#### Rendered Cover Letter Markdown")
-                st.markdown(st.session_state['md_cover'])
-
-            with tab_md_refs:
-                st.markdown("#### Rendered References & Publications Markdown")
-                st.markdown(st.session_state['md_refs'])
-                
-            with tab_pdf_res:
-                st.markdown("#### PDF Resume Viewer")
-                with open(st.session_state['last_resume_path'], "rb") as f:
-                    b64 = base64.b64encode(f.read()).decode('utf-8')
-                st.markdown(f'<iframe src="data:application/pdf;base64,{b64}" width="100%" height="450px" type="application/pdf"></iframe>', unsafe_allow_html=True)
-                st.link_button("Open in OCI Bucket", st.session_state['pdf_resume_url'], use_container_width=True)
-                
-            with tab_pdf_cov:
-                st.markdown("#### PDF Cover Letter Viewer")
-                with open(st.session_state['last_cover_path'], "rb") as f:
-                    b64 = base64.b64encode(f.read()).decode('utf-8')
-                st.markdown(f'<iframe src="data:application/pdf;base64,{b64}" width="100%" height="450px" type="application/pdf"></iframe>', unsafe_allow_html=True)
-                st.link_button("Open in OCI Bucket", st.session_state['pdf_cover_url'], use_container_width=True)
-                
-            with tab_pdf_refs:
-                st.markdown("#### PDF References & Index Viewer")
-                with open(st.session_state['last_refs_path'], "rb") as f:
-                    b64 = base64.b64encode(f.read()).decode('utf-8')
-                st.markdown(f'<iframe src="data:application/pdf;base64,{b64}" width="100%" height="450px" type="application/pdf"></iframe>', unsafe_allow_html=True)
-                st.link_button("Open in OCI Bucket", st.session_state['pdf_refs_url'], use_container_width=True)
-                
-            with tab_comm1:
-                st.markdown("#### Email Outreach Text")
-                st.code(st.session_state['email_text'], language="text")
-                st.markdown("#### WhatsApp Outreach Text")
-                st.code(st.session_state['whatsapp_text'], language="text")
+            res_p = st.session_state.get('last_resume_path')
+            cov_p = st.session_state.get('last_cover_path')
+            ref_p = st.session_state.get('last_refs_path')
+            
+            if res_p and os.path.exists(res_p):
+                with open(res_p, "rb") as f:
+                    st.download_button("📥 Download Resume PDF", f, file_name=Path(res_p).name, mime="application/pdf", use_container_width=True)
+            if cov_p and os.path.exists(cov_p):
+                with open(cov_p, "rb") as f:
+                    st.download_button("📥 Download Cover Letter PDF", f, file_name=Path(cov_p).name, mime="application/pdf", use_container_width=True)
+            if ref_p and os.path.exists(ref_p):
+                with open(ref_p, "rb") as f:
+                    st.download_button("📥 Download References PDF", f, file_name=Path(ref_p).name, mime="application/pdf", use_container_width=True)
+            
+            st.markdown("---")
+            st.markdown("**OCI Object Storage Cloud URLs**")
+            st.code(st.session_state.get('pdf_resume_url', ''), language="text")
+            st.code(st.session_state.get('pdf_cover_url', ''), language="text")
+            
+            st.markdown("---")
+            st.markdown("**Recruiter Email Outreach**")
+            st.text_area("Email Draft", value=st.session_state.get('email_text', ''), height=130)
+            
+            st.markdown("**WhatsApp Quick Pitch**")
+            st.text_area("WhatsApp Message", value=st.session_state.get('whatsapp_text', ''), height=70)
         else:
-            st.warning("Not generated yet. Please click **Generate All Application Assets** first.")
+            st.info("Once you generate your application suite, direct PDF download buttons, cloud storage URLs, and recruiter outreach templates will appear here.")

@@ -1,9 +1,11 @@
 """
-Generator Module for Pathfinder Agent (Enterprise Grade)
------------------------------------------------------------------
-Description: Extracts the master Profile.pdf and synthesizes comprehensive,
-ATS-optimized executive documents spanning 2 to 2.5 pages, preserving all 
-professional experience, full academic history, and complete reference appendixes.
+=============================================================================
+Module:      generator.py
+Description: Asset synthesis engine handling local PDF generation via ReportLab, 
+             cloud storage integrations, and executive document structuring.
+Author:      Mahamat Hissein GUIAGOUSSOU
+Last Updated: September 29, 2026 at 8:15 PM
+=============================================================================
 """
 
 import os
@@ -244,6 +246,23 @@ def generate_local_documents(job_title, company_name, resume_text, cover_letter_
     build_pdf_document(pdf_refs_path, references_text, is_resume=False)
 
     return str(pdf_resume_path), str(pdf_cover_path), str(pdf_refs_path)
+
+
+def generate_executive_assets(role, company, jd, bio):
+    """Bridge function mapping app.py calls directly to the comprehensive synthesis engine."""
+    timestamp = "September 29, 2026 at 8:15 PM"
+    resume_text = generate_comprehensive_resume(bio, role, company, timestamp)
+    cover_letter_text = f"Dear {company} Hiring Team,\n\nApplying for {role}.\n\n{jd}"
+    references_text = "# Professional References & Index\n\nAvailable upon request."
+    
+    r_path, c_path, ref_path = generate_local_documents(role, company, resume_text, cover_letter_text, references_text, "output_assets")
+    
+    return {
+        "status": "success",
+        "resume_path": r_path,
+        "cover_letter_path": c_path,
+        "references_path": ref_path
+    }
 
 
 def upload_to_oci_bucket(file_path, bucket_name="A_NewPathFinder_Agent"):
